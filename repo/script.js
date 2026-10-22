@@ -33,7 +33,7 @@ const inspiration = {
   },
   space: {
     emoji: "🚀",
-    title: "Space & Stars",
+    title: "Space",
     description: "Explore galaxies, planets, stars, and the wonders of the universe."
   }
 };
