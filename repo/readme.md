@@ -1,6 +1,6 @@
 # SnapGrid
 SnapGrid is a responsive image search web application designed to help users quickly discover high-resolution visual content.
-## Features (Part 1 - UI & Scaffold)
+## Features (Part 1 - UI & Scaffold).
 **Responsive Layout:** Built with a modern dark emerald theme and a CSS Grid layout that adapts seamlessly across mobile, tablet, and desktop viewports.
 **Sticky Header:** Keeps search controls accessible at the top of the viewport even while scrolling through results.
 **Category Chips:** Offers predefined quick-selection tags (Nature, Architecture, Animals, etc.) to give users immediate inspiration.
