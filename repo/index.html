@@ -52,6 +52,19 @@
         </div>
         <span class="results-note">Your discoveries appear here</span>
       </div>
+      <!-- Search Controls -->
+<form id="search-form">
+  <input type="text" id="search-input" placeholder="Search high-res images..." required />
+  <button type="submit">Search</button>
+</form>
+
+<!-- State Messages -->
+<div id="loading-spinner" style="display: none;">Loading images...</div>
+<div id="empty-message" style="display: none;"></div>
+<div id="error-message" style="display: none;" class="error"></div>
+
+<!-- Results Grid -->
+<div id="results-container"></div>
 
       <p id="status-message" role="status">Enter a search or choose a category to begin.</p>
       <div id="results-container" aria-live="polite"></div>
