@@ -1,101 +1,42 @@
-const searchForm = document.getElementById("search-form");
-const searchInput = document.getElementById("search-input");
-const searchButton = document.getElementById("search-button");
-const resultsContainer = document.getElementById("results-container");
-const statusMessage = document.getElementById("status-message");
-const categoryButtons = document.querySelectorAll(".category");
+const resultsContainer = document.getElementById('results-container');
+const loadingSpinner = document.getElementById('loading-spinner');
+const errorMessage = document.getElementById('error-message');
+const emptyMessage = document.getElementById('empty-message');
 
-const inspiration = {
-  nature: {
-    emoji: "🌿",
-    title: "Nature Escape",
-    description: "Explore greenery, peaceful forests, and the beauty of the natural world."
-  },
-  architecture: {
-    emoji: "🏛️",
-    title: "Architecture",
-    description: "Discover inspiring buildings, creative spaces, and remarkable structures."
-  },
-  art: {
-    emoji: "🎨",
-    title: "Creative Art",
-    description: "Find colour, imagination, illustration, and ideas for your next creation."
-  },
-  travel: {
-    emoji: "✈️",
-    title: "Travel Dreams",
-    description: "Explore new destinations, memorable journeys, and places to discover."
-  },
-  ocean: {
-    emoji: "🌊",
-    title: "Ocean Views",
-    description: "Dive into blue waters, beautiful coastlines, and peaceful sea views."
-  },
-  space: {
-    emoji: "🚀",
-    title: "Space",
-    description: "Explore galaxies, planets, stars, and the wonders of the universe."
+async function fetchImages(query) {
+  // 1. Reset state visibility & Show Loading Indicator
+  loadingSpinner.style.display = 'block';
+  errorMessage.style.display = 'none';
+  emptyMessage.style.display = 'none';
+  resultsContainer.innerHTML = '';
+
+  try {
+    const response = await fetch(`https://api.example.com/search?q=${encodeURIComponent(query)}`);
+    
+    // 2. Handle HTTP Errors (e.g., 404, 500)
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // 3. Handle Empty Results
+    if (!data.results || data.results.length === 0) {
+      emptyMessage.style.display = 'block';
+      emptyMessage.textContent = 'No results found. Try searching for a different keyword.';
+      return;
+    }
+
+    // Render results
+    renderResults(data.results);
+
+  } catch (error) {
+    // 4. Handle Fetch/Network Errors
+    console.error('Fetch error:', error);
+    errorMessage.style.display = 'block';
+    errorMessage.textContent = 'Failed to fetch results. Please check your connection and try again.';
+  } finally {
+    // Hide loading indicator regardless of success or failure
+    loadingSpinner.style.display = 'none';
   }
-};
-
-function searchInspiration(query) {
-  const term = query.trim().toLowerCase();
-
-  resultsContainer.replaceChildren();
-
-  if (!term) {
-    statusMessage.textContent = "Please enter a search term or choose a category.";
-    return;
-  }
-
-  const matches = Object.entries(inspiration).filter(([key, item]) =>
-    key.includes(term) ||
-    item.title.toLowerCase().includes(term) ||
-    item.description.toLowerCase().includes(term)
-  );
-
-  if (matches.length === 0) {
-    statusMessage.textContent =
-      `No exact matches for "${term}". Try nature, art, travel, ocean, or space.`;
-    return;
-  }
-
-  statusMessage.textContent =
-    `Found ${matches.length} inspiration ${matches.length === 1 ? "card" : "cards"}.`;
-
-  matches.forEach(([key, item]) => {
-    const card = document.createElement("article");
-    card.className = "result-card";
-
-    const icon = document.createElement("div");
-    icon.className = "result-icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.textContent = item.emoji;
-
-    const heading = document.createElement("h3");
-    heading.textContent = item.title;
-
-    const description = document.createElement("p");
-    description.textContent = item.description;
-
-    const tag = document.createElement("span");
-    tag.className = "result-tag";
-    tag.textContent = key;
-
-    card.append(icon, heading, description, tag);
-    resultsContainer.appendChild(card);
-  });
 }
-
-searchForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-  searchInspiration(searchInput.value);
-});
-
-categoryButtons.forEach(function (button) {
-  button.addEventListener("click", function () {
-    const query = button.dataset.query;
-    searchInput.value = query;
-    searchInspiration(query);
-  });
-});
